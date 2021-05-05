@@ -16,7 +16,7 @@ class Suit(IntEnum):
     eichel = 3
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Pip(IntEnum):
@@ -30,13 +30,15 @@ class Pip(IntEnum):
     sau = 8
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Card:
     def __init__(self, suit: Suit, pip: Pip):
         self.suit = suit
         self.pip = pip
+        # in line as it is set only once, instead of self._get_code()
+        self.code = SUIT_CODE[self.suit] + PIP_CODE[self.pip]
 
         # There are some performance problems doing enum lookups, apparently Python implements them in a bit of a convoluted way.
         # We often use Card as a dict key, so this has turned out to be a bit problematic. It turns out to be much faster
@@ -52,8 +54,15 @@ class Card:
     def __hash__(self):
         return self._unique_hash
 
+    # def _get_code(self) -> str:
+    #     """ Returns a 2 chars short name for pip and suit. 
+    #     (s)chellen, h(erz), g(ras), e(ichel) is appended as first char
+    #     the second char represents the corresponding pip value from the PIP_CODE dict
+    #     e.g. 9g, zs, kh, se
+    #     """
+    #     return self.suit.name[:1] + PIP_CODE[self.pip]
 
-pip_scores = {
+PIP_SCORES = {
     Pip.sieben: 0,
     Pip.acht: 0,
     Pip.neun: 0,
@@ -63,6 +72,29 @@ pip_scores = {
     Pip.zehn: 10,
     Pip.sau: 11}
 
+PIP_CODE = {
+    Pip.sieben: '7',
+    Pip.acht: '8',
+    Pip.neun: '9',
+    Pip.unter: 'u',
+    Pip.ober: 'o',
+    Pip.koenig: 'k',
+    Pip.zehn: 'z',
+    Pip.sau: 's'}
+
+SUIT_CODE = {
+    Suit.schellen: 's',
+    Suit.herz: 'h',
+    Suit.gras: 'g',
+    Suit.eichel: 'e'}
+
+# def get_code(card) -> str:
+#     """ Returns a 2 chars short name for pip and suit. 
+#     (s)chellen, h(erz), g(ras), e(ichel) is appended as first char
+#     the second char represents the corresponding pip value from the PIP_CODE dict
+#     e.g. 9g, zs, kh, se
+#     """
+#     return card.suit.name[:1] + PIP_CODE[card.pip]
 
 def new_deck():
     """ Returns an ordered deck. """

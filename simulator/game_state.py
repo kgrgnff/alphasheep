@@ -1,5 +1,7 @@
 from typing import List, Optional
 from enum import Enum
+import yaml
+from itertools import chain
 
 from simulator.player_agent import PlayerAgent
 from simulator.game_mode import GameMode
@@ -46,6 +48,9 @@ class GameState:
 
         # Player who plays the first card of the trick.
         self.leading_player: Optional[Player] = None
+        # Player who is next to play a card. The leading player starts and then the other 3 follow.
+        # -1 it is nobody's turn, e.g game play hasn't started or if all 4 cards have been added to the trick but next round hasn't started etc.
+        self.current_player_index = -1
 
         # During the playing phase, these are the cards that are "on the table", in order of playing.
         self.current_trick_cards = []
@@ -63,3 +68,5 @@ class GameState:
         for p in self.players:
             p.cards_in_hand.clear()
             p.cards_in_scored_tricks.clear()
+
+ 

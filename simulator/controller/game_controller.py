@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 
 from simulator.controller.dealing_behavior import DealFairly, DealingBehavior
-from simulator.card_defs import Suit, pip_scores
+from simulator.card_defs import Suit, PIP_SCORES
 from simulator.game_mode import GameMode, GameContract
 from simulator.game_state import Player, GameState, GamePhase
 from utils.log_util import get_class_logger
@@ -86,7 +86,7 @@ class GameController:
         self.game_state.game_phase = GamePhase.post_play
         log_phase()
 
-        player_scores = [sum(pip_scores[c.pip] for c in p.cards_in_scored_tricks) for p in self.game_state.players]
+        player_scores = [sum(PIP_SCORES[c.pip] for c in p.cards_in_scored_tricks) for p in self.game_state.players]
         for i, p in enumerate(self.game_state.players):
             self.logger.debug("Player {} has score {}.".format(p, player_scores[i]))
         if player_scores[i_decl] > 60:
@@ -130,7 +130,9 @@ class GameController:
             for i_p in (np.arange(4) + i_p_leader) % 4:
 
                 # Get next card from player agent.
+                game_state.current_player_index = i_p
                 player = game_state.players[i_p]
+                self.logger.debug(f"Player {player} is playing.")
                 selected_card = player.agent.play_card(player.cards_in_hand,
                                                        cards_in_trick=game_state.current_trick_cards,
                                                        game_mode=game_mode)
@@ -149,6 +151,10 @@ class GameController:
                 self.logger.debug("Player {} is playing {}.".format(player, selected_card))
                 player.cards_in_hand.remove(selected_card)
                 game_state.current_trick_cards.append(selected_card)
+                if len(game_state.current_trick_cards) == 4:
+                    game_state.current_player_index = -1
+                else:
+                    game_state.current_player_index = (i_p + 1) % 4
                 game_state.ev_changed.notify()
 
             # Determine winner of trick.
@@ -162,6 +168,7 @@ class GameController:
 
             # Move the trick to the scored cards of the winner.
             i_p_leader = i_win_player
+            game_state.current_player_index = i_p_leader
             game_state.leading_player = game_state.players[i_p_leader]
             win_player.cards_in_scored_tricks.extend(game_state.current_trick_cards)
             game_state.current_trick_cards.clear()

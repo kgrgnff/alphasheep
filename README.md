@@ -1,65 +1,26 @@
-# AlphaSheep - Reinforcement Learning for Schafkopf
+# Forked AlphaSheep - Reinforcement Learning for Schafkopf
 
-![Image taken from Wikipedia](README-img.png)
+![Image taken from Wikipedia](README-img.jpg)
 
----
-### Why Schafkopf?
-
-[Schafkopf](https://en.wikipedia.org/wiki/Schafkopf) (English: sheep-head) is a traditional Bavarian card game, and the most popular in Bavaria. 
-
-In my free time, I love playing Schafkopf with my friends! It is a game of many rules, some explicit and some implicit. Since the game is a social activity, people often play "traditionally", in ways that their friends expect. If you know these unwritten rules then it's actually easy: Just play in exactly this way, and you will be a fine player.    
-
-So I've always wondered: is the traditional way optimal? Or can we find better ways of playing? If we train virtual agents, will they converge towards the traditional rules? Or is it possible to open up new playstyles? And, can we extract new "rules" from that?
-
-Plus, I've always wanted to try out RL :) It is not the main focus of my research, but where's the fun in that?
-Schafkopf seems ideal to learn about the many facets of RL, because it is:
-1. **Easy**: It is not overly complex (a single game consists of only 8 steps, during which a player has very limited actions).
-2. **Not so easy**: The game has hierarchical elements: before the game, players bid against each other in an auction, and the winner is then allowed to determine the game contract. The rules change according to this contract, and in some contracts a player can win or lose a large sum of money.
-3. **Hard**: Schafkopf is partially observable, so we can never play it perfectly. Some very critical actions, such as "schießen" (doubling the stakes), are typically taken in a gamble, before any cards are revealed.
-4. **Cooperative**: Some game contracts require players to cooperate (and even communicate). It would be interesting to see if agents communicate in ways that human players usually do.
-
-#### Current state:
-- Stage 1 **(DONE)**: Create an agent that can play a single game in a single game mode really well. 
-- Stage 2: Extend to all game modes, and include the bidding phase. Explore hierarchical planning.
-- Stage 3: Add money into the equation and have agents maximize return over an entire series of games.
-- Stage 4: Explore cooperative play with humans.
- 
-For a long list of notes, see my experiment log in [experiment_log.md](experiment_log.md)!
-
----
-
-### Try it out:
-
-Requirements:
-- Python 3.6+
-- `pip3 install -r requirements.txt`
-
-How to run:
-- `./run_example.sh`: Watch a pretrained version of AlphaSheep play a suit-solo against baseline agents.
-- `./run_user.sh`: Play a suit-solo against baseline agents. How well can you do?
-- Play vs AlphaSheep.... coming soon!
-
----
-
-### Project Overview
-#### Simulator
-- Mostly implemented: can run all major game modes.
-- Bidding phase is still missing
-- Currently only simulates single games (not keeping tabs over multiple rounds)
-- Consequently, there is no "money" counting right now.
-- Main classes: GameController, GameState
+Please see https://github.com/ttbrunner/alphasheep for project infos of AlphaSheep - Reinforcement Learning for Schafkopf
 
 #### GUI
-- Basic PyGame implementation
-- Completely optional - can be attached via event subscriber
-- Single-threaded: blocks after every move, so the user can step through a game
-- Currently, the user can observe agents play, or play themselves via the GuiAgent.
+- Basic PyGame implementation wih pygame_ui
+
+Foremost, it is about machine learning not about more fancy GUIs with Cards.js or Unity. But I've modified gui<span></span>.py ... to allow for more options to select a card and to allow multiple GUI agents in a game, when invoked by e.g. "python play_with_gui.py --p0-agent=user --p1-agent=user --p2-agent=user --p3-agent=user"<br>
+With the parameter --card-deck hands defined in a YAML file could be dealt when starting "python play_with_gui.py --card-deck data/states/gui_deck.yaml ..."<br>
+Besides point and click, the cards of GUI agents may now be played by point and key. The spacebar will allow the playout of a card of a GUI agent when pressed while hovering over a card in a hand. Anyways, the spacebar will also move the gameplay forward and allow the playout of cards of static agents. <br>
+Alternatively, you may also enter the number keys 1-8 to play out the n-th card in the hand of a GUI player.
+Or enter a card code i.e 'es' for the oide Eichel S.., 'gz' for the Blauen Eisenbahner, 's7' for the Schellen Belli, 'hk' for the king of hearts etc.<br>
+The positions of the cards in the trick will vary to make GUI play more pleasing.
+
 
 #### Agents
-- Are asked for a card to play, based on the following information:
-    - Current cards in (own) hand
-    - Cards in current trick (on the table, played other players)
-- Are notified of trick and game results.
-- RandomCardAgent: Baseline that plays a random card that does not violate the rules.
-- RuleBasedAgent: Plays according to rules that a human would also observe.
-- DQNAgent: First try at a super-basic RL learner. After some tuning, it performs quite well!
+-  ...
+
+#### Notes
+Rufspiel and Ramsch and other solos like Bettel, Geier, Kaiser and their Farbspiel variants etc. could be added ...
+Add the bidding phase etc.
+
+Further agents for other card games might be trained: Cego for Schwarzwalders, Doppelkopf for the Oldenburger Land, Skat for Altenburg, Zwickern for Flensburg. Königrufen, Zwanzigerrufen, Neunzehnerrufen and Schnapsen might be added for the Austrian Kaiserlanden.
+

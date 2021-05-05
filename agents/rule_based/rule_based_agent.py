@@ -2,7 +2,7 @@ from typing import List, Iterable
 import numpy as np
 
 from simulator.player_agent import PlayerAgent
-from simulator.card_defs import Card, Suit, Pip, pip_scores
+from simulator.card_defs import Card, Suit, Pip, PIP_SCORES
 from simulator.game_mode import GameMode, GameContract
 from utils.log_util import get_class_logger
 
@@ -35,14 +35,15 @@ class RuleBasedAgent(PlayerAgent):
         # hopefully makes it more readable, debuggable, and understandable.
         # If we develop any ambitions about making this agent play REALLY well, we might have to consolidate this.
 
-        if game_mode.contract == GameContract.suit_solo:
+        if game_mode.contract == GameContract.suit_solo \
+            or game_mode.contract == GameContract.wenz:
             # Are we the main player?
             if game_mode.declaring_player_id == self.player_id:
                 selected_card = self._play_card_solo_declaring(cards_in_hand, cards_in_trick, game_mode)
             else:
                 selected_card = self._play_card_solo_not_declaring(cards_in_hand, cards_in_trick, game_mode)
         else:
-            raise NotImplementedError("Sorry, can only play a Suit-solo right now.")
+            raise NotImplementedError("Sorry, can only play a Suit-solo or Wenz right now.")
 
         return selected_card
 
@@ -277,7 +278,7 @@ class RuleBasedAgent(PlayerAgent):
 
     def _cards_by_value(self, in_cards: Iterable[Card]) -> List[Card]:
         # Sorts cards by value.
-        return sorted(in_cards, key=lambda c: pip_scores[c.pip])
+        return sorted(in_cards, key=lambda c: PIP_SCORES[c.pip])
 
     def _winning_card(self, cards_in_trick: List[Card], game_mode: GameMode) -> Card:
         # Gets the winning card out of a trick. The trick can have less than 4 cards.

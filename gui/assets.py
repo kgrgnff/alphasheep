@@ -2,7 +2,7 @@ import os
 
 from simulator.card_defs import Card, Pip, Suit
 
-open_tarock_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "assets/cards/OpenTarock/")
+open_tarock_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data/images/cards/OpenTarock/")
 open_tarock_filenames = {
         Card(Suit.eichel, Pip.sau): "1.png",
         Card(Suit.gras, Pip.sau): "2.png",
@@ -41,3 +41,4 @@ open_tarock_filenames = {
 
 def get_card_img_path(card: Card) -> str:
     return os.path.join(open_tarock_dir, open_tarock_filenames[card])
+
